@@ -121,14 +121,15 @@ function M.startup(use)
       if cfg.lsp_servers ~= nil then
         for server, server_cfg in pairs(cfg.lsp_servers) do
           local finalcfg = { on_attach = on_attach }
-          if server_cfg.on_attach ~= nil then
-            finalcfg.on_attach = function(...)
-              on_attach(...)
-              server_cfg.on_attach(...)
-            end
-          end
           for k, v in pairs(server_cfg) do
-            finalcfg[k] = v
+            if k == 'on_attach' then
+              finalcfg[k] = function(...)
+                on_attach(...)
+                v(...)
+              end
+            else
+              finalcfg[k] = v
+            end
           end
           lspconfig[server].setup(finalcfg)
         end
