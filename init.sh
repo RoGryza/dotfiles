@@ -4,9 +4,14 @@ set -euo pipefail
 
 export OVERWRITE=${OVERWRITE:-0}
 
+# TODO handle this better...
 TPM="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM" ]; then
   git clone https://github.com/tmux-plugins/tpm "$TPM"
+fi
+NVM="$HOME/.config/nvm"
+if [ ! -d "$NVM" ]; then
+  git clone https://github.com/nvm-sh/nvm "$NVM"
 fi
 
 # TODO move this elsewhere?

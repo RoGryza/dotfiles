@@ -1,5 +1,4 @@
 source "$HOME/.local/lib/zsh/oh-my-zsh.sh"
-source "$HOME/.local/lib/zsh/keyboard.sh"
 
 # Aliases
 alias ipython='ipython --no-banner --no-confirm-exit'
@@ -33,5 +32,10 @@ PROMPT="%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%} %{$
 stty stop undef
 stty start undef
 
+source "$HOME/.local/lib/zsh/keyboard.sh"
+
+# TODO modularize...
 eval "$(fasd --init auto)"
 eval "$(direnv hook zsh)"
+
+source "$HOME/.config/nvm/nvm.sh"
