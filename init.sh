@@ -29,18 +29,17 @@ function linkfile {
   REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
   DST_FILE="$HOME/.$REL_NAME"
 
-  echo -n "$SRC_FILE..."
+  echo -n "$DST_FILE..."
 
-  if [ ! -f "$DST_FILE" ]; then
+  if [[ -L "$DST_FILE" ]] && [[ "$(readlink "$DST_FILE")" = "$SRC_FILE" ]]; then
+    echo "unchanged"
+  elif [[ -L "$DST_FILE" ]] && [[ "$OVERWRITE" -eq 1 ]]; then
+    ln -fs "$SRC_FILE" "$DST_FILE"
+    echo "replaced"
+  elif [[ ! -e "$DST_FILE" ]]; then
     mkdir -p "$(dirname $DST_FILE)"
     ln -s "$SRC_FILE"  "$DST_FILE"
     echo "created"
-  elif [ "$(readlink "$DST_FILE")" = "$SRC_FILE" ]; then
-    echo "unchanged"
-  elif [ "$OVERWRITE" -eq 1 ]; then
-    mkdir -p "$(dirname $DST_FILE)"
-    ln -fs "$SRC_FILE" "$DST_FILE"
-    echo "replaced"
   else
     echo "not replacing"
     exit 1

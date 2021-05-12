@@ -4,6 +4,7 @@ function M.startup(use)
   local langs = {
     require('lang/lua'),
     require('lang/rust'),
+    require('lang/typescript'),
   }
   for _, desc in ipairs(require('lang/simple')) do
     table.insert(langs, desc)
@@ -21,21 +22,57 @@ function M.startup(use)
   -- Base packages
   use { 'neovim/nvim-lspconfig' }
   use {
-    'nvim-lua/completion-nvim',
-    requires = 'nvim-lspconfig',
-    opt = true,
+    'hrsh7th/nvim-compe',
     config = function()
-      vim.cmd [[
-      " Use <Tab> and <S-Tab> to navigate through popup menu
-      imap <tab> <Plug>(completion_smart_tab)
-      imap <s-tab> <Plug>(completion_smart_s_tab)
+      vim.o.completeopt = 'menuone,noselect'
+      require'compe'.setup {
+        enabled = true;
+        preselect = 'disable';
 
-      " Set completeopt to have a better completion experience
-      set completeopt=menuone,noinsert,noselect
+        source = {
+          path = true;
+          buffer = true;
+          nvim_lsp = true;
+          nvim_lua = true;
+        },
+      }
 
-      " Avoid showing message extra message when using completion
-      set shortmess+=c
-      ]]
+      -- Use (s-)tab to move to prev/next item in completion menuone
+      -- Copied from nvim-compe README
+      local t = function(str)
+        return vim.api.nvim_replace_termcodes(str, true, true, true)
+      end
+
+      local check_back_space = function()
+        local col = vim.fn.col('.') - 1
+        if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+          return true
+        else
+          return false
+        end
+      end
+
+      _G.tab_complete = function()
+        if vim.fn.pumvisible() == 1 then
+          return t "<C-n>"
+        elseif check_back_space() then
+          return t "<Tab>"
+        else
+          return vim.fn['compe#complete']()
+        end
+      end
+
+      _G.s_tab_complete = function()
+        if vim.fn.pumvisible() == 1 then
+          return t "<C-p>"
+        else
+          return t "<S-Tab>"
+        end
+      end
+      vim.api.nvim_set_keymap("i", "<C-space>", "compe#complete()", {expr = true})
+      vim.api.nvim_set_keymap("i", "<CR>", "compe#confirm('<CR>')", {expr = true})
+      vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
     end
   }
   use {
@@ -54,10 +91,10 @@ function M.startup(use)
         context_commentstring = { enable = true }
       }
       vim.cmd [[
-        set nofoldenable
-        set foldlevelstart=99
-        set foldmethod=expr
-        set foldexpr=nvim_treesitter#foldexpr()
+      set nofoldenable
+      set foldlevelstart=99
+      set foldmethod=expr
+      set foldexpr=nvim_treesitter#foldexpr()
       ]]
     end
   }
@@ -75,8 +112,6 @@ function M.startup(use)
   -- Apply lang configs
   local on_attach = function(...)
     require'lang'.on_lsp_attach(...)
-    require'packer'.loader('completion-nvim')
-    require'completion'.on_attach(...)
   end
 
   -- TODO: autoinstall missing servers
@@ -86,6 +121,12 @@ function M.startup(use)
       if cfg.lsp_servers ~= nil then
         for server, server_cfg in pairs(cfg.lsp_servers) do
           local finalcfg = { on_attach = on_attach }
+          if server_cfg.on_attach ~= nil then
+            finalcfg.on_attach = function(...)
+              on_attach(...)
+              server_cfg.on_attach(...)
+            end
+          end
           for k, v in pairs(server_cfg) do
             finalcfg[k] = v
           end
@@ -103,8 +144,8 @@ function M.startup(use)
 
   vim.cmd [[
   augroup afterPacker
-    au!
-    au User PackerComplete lua setup_servers()
+  autocmd!
+  autocmd VimEnter * lua setup_servers()
   augroup END
   ]]
 end

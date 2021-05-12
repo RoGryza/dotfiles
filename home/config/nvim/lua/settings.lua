@@ -45,11 +45,16 @@ vim.o.writebackup = true
 vim.g.noswapfile = true
 
 vim.o.clipboard = 'unnamed'
+-- TODO
+-- if vim.fn.exists('g:loaded_clipboard_provider') then
+--   vim.g.loaded_clipboard_provider = nil
+--   vim.fn.runtime 'autoload/provider/clipboard.vim'
+-- end
 
 -- Persist (g)undo tree between sessions
 vim.o.undofile = true
 vim.o.history = 4096
-vim.o.undolevels = 4096
+vim.g.undolevels = 4096
 
 vim.highlight.on_yank()
 vim.o.colorcolumn = "100"
