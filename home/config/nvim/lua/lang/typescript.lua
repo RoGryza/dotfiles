@@ -22,6 +22,11 @@ return {
           format_on_save = true,
           no_save_after_format = false,
         }
+        vim.cmd [[
+        augroup lsp_document_formatting
+          autocmd! * <buffer>
+        augroup END
+        ]]
       end
     },
   },
