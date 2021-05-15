@@ -14,6 +14,22 @@ if [ ! -d "$NVM" ]; then
   git clone https://github.com/nvm-sh/nvm "$NVM"
 fi
 
+#TODO check installed nerd fonts version
+NERDFONT="FiraCode"
+NERDFONTS_VERSION="2.1.0"
+NERDFONT_MARKER="$HOME/.local/share/fonts/.$NERDFONT"
+if [ ! -f "$NERDFONT_MARKER" ]; then
+  CACHED="$HOME/.cache/nerdfonts/$NERDFONT.zip"
+  if [ ! -f "$CACHED" ]; then
+    mkdir -p "$(dirname "$CACHED")"
+    wget -O "$CACHED" \
+      "https://github.com/ryanoasis/nerd-fonts/releases/download/v$NERDFONTS_VERSION/$NERDFONT.zip"
+  fi
+  unzip "$CACHED" -d "$HOME/.local/share/fonts/"
+  echo "$NERDFONTS_VERSION" > "$NERDFONT_MARKER"
+  fc-cache -fv
+fi
+
 # TODO move this elsewhere?
 # Base flavours paths
 FLAVOUR_FILES="$( \
@@ -52,3 +68,6 @@ function linkfile {
 }
 export -f linkfile
 find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'linkfile "$@"' --
+
+# TODO handle this better...
+ln -fs "$HOME/.xinitrc" "$HOME/.xsession"

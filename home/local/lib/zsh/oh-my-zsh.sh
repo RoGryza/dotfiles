@@ -1,4 +1,5 @@
 # Somewhat copied from ZSH setup script
+# TODO move to init.sh
 # https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
 ZSH="$HOME/.oh-my-zsh"
 REMOTE="https://github.com/ohmyzsh/ohmyzsh.git"

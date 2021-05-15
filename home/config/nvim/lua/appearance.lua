@@ -3,7 +3,7 @@ vim.o.list = true
 vim.o.listchars = 'tab:▸\\ ,trail:¬,nbsp:.,extends:❯,precedes:❮'
 
 -- TODO lua
-vim.o.guifont = 'DejaVuSansMono Nerd Font Mono:h16'
+vim.o.guifont = 'Fira Code Nerd Font Complete Mono:h16'
 vim.cmd [[
 augroup ListChars2
  au!

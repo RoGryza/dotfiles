@@ -13,8 +13,8 @@ bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOU
 floating_modifier $mod
 
 # applications
-bindsym $mod+Return exec alacritty -e tmux
-bindsym $mod+Shift+b exec firefox
+bindsym $mod+Return exec --no-startup-id alacritty -e tmux
+bindsym $mod+Shift+b exec --no-startup-id sensible-browser
 bindsym $mod+l exec --no-startup-id loginctl lock-session
 bindsym $mod+r exec --no-startup-id krunner
 
@@ -25,7 +25,7 @@ focus_follows_mouse yes
 bindsym $mod+x kill
 
 # A more modern dmenu replacement is rofi:
-bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 
 # change focus
 bindsym $mod+j focus next

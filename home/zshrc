@@ -1,5 +1,7 @@
 source "$HOME/.local/lib/zsh/oh-my-zsh.sh"
 
+export PATH="$HOME/.cargo/bin:$PATH"
+
 # Aliases
 alias ipython='ipython --no-banner --no-confirm-exit'
 alias ls='lsd'
