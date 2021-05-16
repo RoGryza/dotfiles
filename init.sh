@@ -44,7 +44,6 @@ while IFS= read -r FILE; do
 done <<< "$FLAVOUR_FILES"
 
 export SRC_DIR="$(realpath home)"
-export DST_DIR="$HOME"
 function linkfile {
   SRC_FILE="$1"
   REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
@@ -54,7 +53,7 @@ function linkfile {
 
   if [[ -L "$DST_FILE" ]] && [[ "$(readlink "$DST_FILE")" = "$SRC_FILE" ]]; then
     echo "unchanged"
-  elif [[ -L "$DST_FILE" ]] && [[ "$OVERWRITE" -eq 1 ]]; then
+  elif [[ "$OVERWRITE" -eq 1 ]]; then
     ln -fs "$SRC_FILE" "$DST_FILE"
     echo "replaced"
   elif [[ ! -e "$DST_FILE" ]]; then
@@ -71,3 +70,5 @@ find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'linkfile "$@"' --
 
 # TODO handle this better...
 ln -fs "$HOME/.xinitrc" "$HOME/.xsession"
+mkdir -p "$HOME/.config/x11"
+ln -fs "$HOME/.xinitrc" "$HOME/.config/x11/nvidia-xinitrc"

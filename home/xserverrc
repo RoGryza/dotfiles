@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /usr/lib/Xorg.wrap -nolisten tcp "$@" vt$XDG_VTNR -keeptty > ~/.Xorg.log 2>&1
