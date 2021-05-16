@@ -2,15 +2,24 @@
 
 set -euo pipefail
 
+./requirements.sh
+
 export OVERWRITE=${OVERWRITE:-0}
 
 # TODO handle this better...
+ANTIGEN="$HOME/.local/lib/zsh/antigen"
+if [ ! -d "$ANTIGEN" ]; then
+  mkdir -p "`dirname "$ANTIGEN"`"
+  git clone https://github.com/zsh-users/antigen.git "$ANTIGEN"
+fi
 TPM="$HOME/.tmux/plugins/tpm"
 if [ ! -d "$TPM" ]; then
+  mkdir -p "`dirname "$TPM"`"
   git clone https://github.com/tmux-plugins/tpm "$TPM"
 fi
 NVM="$HOME/.config/nvm"
 if [ ! -d "$NVM" ]; then
+  mkdir -p "`dirname "$NVM"`"
   git clone https://github.com/nvm-sh/nvm "$NVM"
 fi
 
@@ -49,7 +58,7 @@ function linkfile {
   REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
   DST_FILE="$HOME/.$REL_NAME"
 
-  echo -n "$DST_FILE..."
+  echo -n "$DST_FILE... "
 
   if [[ -L "$DST_FILE" ]] && [[ "$(readlink "$DST_FILE")" = "$SRC_FILE" ]]; then
     echo "unchanged"

@@ -1,6 +1,30 @@
-source "$HOME/.local/lib/zsh/oh-my-zsh.sh"
+# {{ antigen
+source "$HOME/.local/lib/zsh/antigen/antigen.zsh"
+antigen use 'oh-my-zsh'
+antigen bundle 'cargo'
+antigen bundle 'colorize'
+antigen bundle 'docker'
+antigen bundle 'kubectl'
+antigen bundle 'pass'
+antigen bundle 'git'
+antigen bundle 'gpg-agent'
+antigen bundle 'zsh_reload'
+
+antigen bundle 'zsh-users/zsh-syntax-highlighting'
+antigen bundle 'zsh-users/zsh-autosuggestions'
+antigen bundle 'zsh-users/zsh-completions'
+
+antigen bundle 'NullSense/fuzzy-sys'
+
+antigen apply
+# }}
 
 export PATH="$HOME/.cargo/bin:$PATH"
+
+if command -v bat &> /dev/null; then
+  # Color man using bat
+  export MANPAGER="sh -c 'col -bx | bat -l man -p --paging always'"
+fi
 
 # Aliases
 alias ipython='ipython --no-banner --no-confirm-exit'
@@ -37,7 +61,39 @@ stty start undef
 source "$HOME/.local/lib/zsh/keyboard.sh"
 
 # TODO modularize...
-eval "$(fasd --init auto)"
+# {{ fzf
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+
+function fman() {
+  man -k . \
+    | fzf -q "$1" \
+    --prompt='man> ' \
+    --preview $'echo {} | tr -d \'()\' | awk \'{printf "%s ", $2} {print $1}\' | xargs -r man | col -bx | bat -l man -p --color always' \
+    | tr -d '()' \
+    | awk '{printf "%s ", $2} {print $1}' \
+    | xargs -r man
+}
+function fgco() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)")
+  branch=$(echo "$branches" | fzf -d $(( 2 + $(wc -l <<< "$branches") )) +m)
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+_fzf_compgen_path() {
+  $FZF_DEFAULT_COMMAND . "$1"
+}
+
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
+
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+# }}
+
+eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
 
 source "$HOME/.config/nvm/nvm.sh"
