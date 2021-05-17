@@ -1,0 +1,6 @@
+assume_yes = true
+no_retry = true
+[commands]
+"flavours update" = "flavours update all"
+"Update packer.nvim" = "nvim . --headless +'autocmd User PackerComplete sleep 100m | qall' +PackerSync"
+"update antigen" = "source ~/.local/lib/zsh/antigen/antigen.zsh && antigen update"

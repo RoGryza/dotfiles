@@ -39,6 +39,11 @@ if [ ! -f "$NERDFONT_MARKER" ]; then
   fc-cache -fv
 fi
 
+# TODO handle this better...
+ln -fs "$HOME/.xinitrc" "$HOME/.xsession"
+mkdir -p "$HOME/.config/x11"
+ln -fs "$HOME/.xinitrc" "$HOME/.config/x11/nvidia-xinitrc"
+
 # TODO move this elsewhere?
 # Base flavours paths
 FLAVOUR_FILES="$( \
@@ -67,17 +72,39 @@ function linkfile {
     echo "replaced"
   elif [[ ! -e "$DST_FILE" ]]; then
     mkdir -p "$(dirname $DST_FILE)"
-    ln -s "$SRC_FILE"  "$DST_FILE"
+    ln -s "$SRC_FILE" "$DST_FILE"
     echo "created"
   else
     echo "not replacing"
-    exit 1
+    return 1
   fi
 }
 export -f linkfile
-find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'linkfile "$@"' --
+find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'linkfile "$@"' -- || true
 
-# TODO handle this better...
-ln -fs "$HOME/.xinitrc" "$HOME/.xsession"
-mkdir -p "$HOME/.config/x11"
-ln -fs "$HOME/.xinitrc" "$HOME/.config/x11/nvidia-xinitrc"
+export SRC_DIR="$(realpath etc)"
+function sudocopyfile {
+  SRC_FILE="$1"
+  REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
+  DST_FILE="/etc/$REL_NAME"
+
+  echo -n "$DST_FILE... "
+  
+  if [ -f "$DST_FILE" ]; then
+    if sudo diff "$SRC_FILE" "$DST_FILE" &> /dev/null; then
+      echo "unchanged"
+    elif [[ "$OVERWRITE" -eq 1 ]]; then
+      sudo cp "$SRC_FILE" "$DST_FILE"
+      echo "replaced"
+    else
+      echo "not replacing"
+      return 1
+    fi
+  else
+    sudo mkdir -p "$(dirname $DST_FILE)"
+    sudo cp "$SRC_FILE" "$DST_FILE"
+    echo "created"
+  fi
+}
+export -f sudocopyfile
+find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'sudocopyfile "$@"' -- || true

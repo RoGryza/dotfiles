@@ -1,0 +1,2 @@
+# Disable password prompt timeout
+Defaults passwd_timeout=0
