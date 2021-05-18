@@ -6,7 +6,9 @@ echo -n "Checking requirements... "
 
 ERRORS=()
 
-REQUIRED_CMDS=(bat direnv fd fzf i3 lsd git nvim rg tmux xclip zsh zoxide)
+REQUIRED_CMDS=(
+  bat direnv fd fzf gpg i3 lsd git nvim pinentry-qt rg ssh-agent tmux xclip zsh zoxide
+)
 
 if uname -a | grep archlinux &> /dev/null; then
   REQUIRED_CMDS+=(yay pkgfile)
