@@ -22,6 +22,22 @@ if [ ! -d "$NVM" ]; then
   mkdir -p "`dirname "$NVM"`"
   git clone https://github.com/nvm-sh/nvm "$NVM"
 fi
+# TODO what to do about per-host configs
+DF_ENV="${DF_ENV:-}"
+if [ "$DF_ENV" = home ]; then
+  HAXE_LANGUAGE_SERVER="$HOME/.local/src/haxe_language_server"
+  if [ ! -d "$HAXE_LANGUAGE_SERVER" ]; then
+    mkdir -p "`dirname "$HAXE_LANGUAGE_SERVER"`"
+    git clone https://github.com/vshaxe/haxe-language-server "$HAXE_LANGUAGE_SERVER"
+  fi
+  HAXE_LANGUAGE_SERVER_SCRIPT="$HAXE_LANGUAGE_SERVER/bin/server.js"
+  if [ ! -f "$HAXE_LANGUAGE_SERVER_SCRIPT" ]; then
+    cd "$HAXE_LANGUAGE_SERVER"
+    yarn import
+    yarn install
+    npx lix run vshaxe-build -t language-server
+  fi
+fi
 
 #TODO check installed nerd fonts version
 NERDFONT="FiraCode"

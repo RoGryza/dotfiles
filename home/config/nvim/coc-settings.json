@@ -1,0 +1,10 @@
+// TODO modularize this
+{
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.workspace.library": {
+    "/usr/share/nvim/runtime/lua": true,
+    "/usr/share/nvim/runtime/lua/vim": true,
+    "/usr/share/nvim/runtime/lua/vim/lsp": true
+  },
+  "Lua.diagnostics.globals": ["vim"]
+}

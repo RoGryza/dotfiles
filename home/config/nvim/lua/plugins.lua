@@ -56,18 +56,14 @@ return packer.startup({
         ]]
       end
     }
-    use {
-      'gbrlsnchs/telescope-lsp-handlers.nvim',
-      after = 'telescope.nvim',
-      config = function()
-        require'telescope'.load_extension('lsp_handlers')
-      end
-    }
 
+    -- TODO revisit configuration for lualine
+    -- TODO fix lualine font D: (maybe neovide issue?)
     use {
       'hoob3rt/lualine.nvim',
       requires = {'kyazdani42/nvim-web-devicons', opt = true},
-      config = function() require('lualine').setup {} end,
+      config = function() require('lualine').setup {
+      } end,
     }
 
     -- Languages
