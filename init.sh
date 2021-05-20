@@ -22,6 +22,12 @@ if [ ! -d "$NVM" ]; then
   mkdir -p "`dirname "$NVM"`"
   git clone https://github.com/nvm-sh/nvm "$NVM"
 fi
+PLUG="$HOME/.local/share/nvim/site/autoload/plug.vim"
+if [ ! -f "$PLUG" ]; then
+  mkdir -p "`dirname "$PLUG"`"
+  curl -fLo "$PLUG" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+       
 # TODO what to do about per-host configs
 DF_ENV="${DF_ENV:-}"
 if [ "$DF_ENV" = home ]; then
@@ -98,29 +104,32 @@ function linkfile {
 export -f linkfile
 find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'linkfile "$@"' -- || true
 
-export SRC_DIR="$(realpath etc)"
-function sudocopyfile {
-  SRC_FILE="$1"
-  REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
-  DST_FILE="/etc/$REL_NAME"
+RUN_SUDO=${RUN_SUDO:-}
+if [ "$RUN_SUDO" = "1" ]; then
+  export SRC_DIR="$(realpath etc)"
+  function sudocopyfile {
+    SRC_FILE="$1"
+    REL_NAME="$(realpath --relative-to="$SRC_DIR" "$SRC_FILE")"
+    DST_FILE="/etc/$REL_NAME"
 
-  echo -n "$DST_FILE... "
-  
-  if [ -f "$DST_FILE" ]; then
-    if sudo diff "$SRC_FILE" "$DST_FILE" &> /dev/null; then
-      echo "unchanged"
-    elif [[ "$OVERWRITE" -eq 1 ]]; then
-      sudo cp "$SRC_FILE" "$DST_FILE"
-      echo "replaced"
+    echo -n "$DST_FILE... "
+    
+    if [ -f "$DST_FILE" ]; then
+      if sudo diff "$SRC_FILE" "$DST_FILE" &> /dev/null; then
+        echo "unchanged"
+      elif [[ "$OVERWRITE" -eq 1 ]]; then
+        sudo cp "$SRC_FILE" "$DST_FILE"
+        echo "replaced"
+      else
+        echo "not replacing"
+        return 1
+      fi
     else
-      echo "not replacing"
-      return 1
+      sudo mkdir -p "$(dirname $DST_FILE)"
+      sudo cp "$SRC_FILE" "$DST_FILE"
+      echo "created"
     fi
-  else
-    sudo mkdir -p "$(dirname $DST_FILE)"
-    sudo cp "$SRC_FILE" "$DST_FILE"
-    echo "created"
-  fi
-}
-export -f sudocopyfile
-find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'sudocopyfile "$@"' -- || true
+  }
+  export -f sudocopyfile
+  find "$SRC_DIR" -type f -print0 | xargs -n1 -0 bash -c 'sudocopyfile "$@"' -- || true
+fi
