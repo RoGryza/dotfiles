@@ -1,5 +1,0 @@
-assume_yes = true
-no_retry = true
-[commands]
-"flavours update" = "flavours update all"
-"update antigen" = "source ~/.local/lib/zsh/antigen/antigen.zsh && antigen update"

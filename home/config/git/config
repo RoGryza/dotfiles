@@ -1,7 +1,0 @@
-[user]
-	email = rogryza@rogryza.com
-	name = Rodrigo Gryzinski
-[init]
-	defaultBranch = master
-[core]
-	hooksPath = ~/.config/git/hooks

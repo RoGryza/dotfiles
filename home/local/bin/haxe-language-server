@@ -1,3 +1,0 @@
-#!/bin/bash
-
-node "$HOME/.local/src/haxe_language_server/bin/server.js" "$@"
