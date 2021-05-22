@@ -1,26 +1,30 @@
+local extraModules = [
+  import './delta.jsonnet',
+];
 local checks = import 'lib/checks.libsonnet';
 local util = import 'lib/util.libsonnet';
-{
-  local root = self,
-
+local defaultModule = {
   checks+: [
     checks.commandExists('git'),
   ],
 
   git+: {
     config+: {
-      user: {
+      user+: {
         name: error 'git.config.user.name must be set',
         email: error 'git.config.user.email must be set',
       },
-      init: {
+      init+: {
         defaultBranch: 'master',
       },
-      core: {
+      core+: {
         hooksPath: '~/.config/git/hooks',
       },
-      credential: {
+      credential+: {
         helper: 'store',
+      },
+      diff+: {
+        colorMoved: 'default',
       },
     },
     hooks+: {
@@ -31,7 +35,7 @@ local util = import 'lib/util.libsonnet';
   },
 
   files+: {
-    '~/.config/git/config': util.manifestGitConfig(root.git.config),
+    '~/.config/git/config': util.manifestGitConfig($.git.config),
   } + util.mergeAll(std.flatMap(
     function(hook)
       [{
@@ -53,11 +57,12 @@ local util = import 'lib/util.libsonnet';
         {
           ['~/.config/git/hooks/%s.d/%s' % [hook, hookScript]]: {
             mode: '755',
-            content: root.git.hooks[hook][hookScript],
+            content: $.git.hooks[hook][hookScript],
           },
         }
-        for hookScript in std.objectFields(root.git.hooks[hook])
+        for hookScript in std.objectFields($.git.hooks[hook])
       ],
-    std.objectFields(root.git.hooks)
+    std.objectFields($.git.hooks)
   )),
-}
+};
+util.mergeAll([defaultModule] + extraModules)
