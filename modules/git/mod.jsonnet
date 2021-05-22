@@ -44,10 +44,10 @@ local util = import 'lib/util.libsonnet';
             trap "rm -f $tmpfile" EXIT
             cat > $tmpfile
 
-            for SCRIPT in %s/git/hooks/%s.d/*; do
+            for SCRIPT in ~/.config/git/hooks/%s.d/*; do
               $SCRIPT "$@" < $tmpfile
             done
-          |||,
+          ||| % [hook],
         },
       }] + [
         {

@@ -1,4 +1,5 @@
 local checks = import 'lib/checks.libsonnet';
+local util = import 'lib/util.libsonnet';
 {
   local root = self,
 
@@ -14,12 +15,6 @@ local checks = import 'lib/checks.libsonnet';
     },
   },
 
-  // TODO do this with files
-  activation+: [
-    'mkdir -p `dirname %s`' % conf.file
-    for conf in std.objectValues(root.flavours)
-  ],
-
   files+: {
     '~/.config/flavours/config.toml': std.manifestToml({
       shell: "bash -c '{}'",
@@ -29,5 +24,9 @@ local checks = import 'lib/checks.libsonnet';
         for name in std.objectFields(root.flavours)
       ],
     }),
+  } + {
+    [util.pathDirname(conf.file)]: { type: 'dir' }
+    for conf in std.objectValues(root.flavours)
+    if util.pathDirname(conf.file) != '~'
   },
 }
