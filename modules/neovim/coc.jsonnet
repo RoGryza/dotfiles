@@ -1,11 +1,9 @@
 local checks = import 'lib/checks.libsonnet';
 {
-  local root = self,
-
   vim+: {
     plugins+: {
       'neoclide/coc.nvim': {
-        branch: 'release',
+        plug: { branch: 'release' },
         config: importstr './coc.vim',
       },
     },
@@ -15,6 +13,6 @@ local checks = import 'lib/checks.libsonnet';
   },
 
   files+: {
-    '~/.config/nvim/coc-settings.json': std.manifestJson(root.vim.coc.settings),
+    '~/.config/nvim/coc-settings.json': std.manifestJson($.vim.coc.settings),
   },
 }

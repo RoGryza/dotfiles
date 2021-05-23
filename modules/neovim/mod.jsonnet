@@ -2,11 +2,12 @@ local checks = import 'lib/checks.libsonnet';
 local util = import 'lib/util.libsonnet';
 local extraModules = [
   import './coc.jsonnet',
-  import './langs/zig.jsonnet',
+  // import './langs/zig.jsonnet',
+  import './langs/typescript.jsonnet',
+  import './langs/rust.jsonnet',
+  import './langs/toml.jsonnet',
 ];
 local defaultModule = {
-  local root = self,
-
   checks+: [
     checks.commandExists('nvim'),
     checks.commandExists('nvr'),
@@ -42,21 +43,21 @@ local defaultModule = {
     '~/.local/share/nvim/site/pack/my/opt/my-plugins/plugin/init.vim': std.join(
       '\n',
       ['call plug#begin(stdpath("data") . "/plugged")\n']
-      + [
-        'Plug %s%s' % [
-          std.escapeStringBash(plugin),
-          if std.objectHas(root.vim.plugins[plugin], 'branch')
-          // TODO utils.manifestVim
-          then ", { 'branch': %s }" % std.escapeStringBash(root.vim.plugins[plugin].branch)
-          else '',
-        ]
-        for plugin in std.objectFields(root.vim.plugins)
-      ]
+      + util.mapToArray(
+        function(plugin, config)
+          'Plug %s%s' % [
+            std.escapeStringBash(plugin),
+            if std.objectHas(config, 'plug')
+            then ', %s' % util.serializeVim(config.plug)
+            else '',
+          ],
+        $.vim.plugins,
+      )
       + ['\ncall plug#end()']
       + [
-        '\n" %s\n%s' % [plugin, root.vim.plugins[plugin].config]
-        for plugin in std.objectFields(root.vim.plugins)
-        if std.objectHas(root.vim.plugins[plugin], 'config')
+        '\n" %s\n%s' % [plugin, $.vim.plugins[plugin].config]
+        for plugin in std.objectFields($.vim.plugins)
+        if std.objectHas($.vim.plugins[plugin], 'config')
       ]
     ),
     // TODO maybe use git instead of curl

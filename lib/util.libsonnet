@@ -11,6 +11,21 @@
       std.objectFields(tbl),
     )),
 
+  _vimSerializers:: {
+    string: std.escapeStringBash,
+    object: function(value)
+      local fields = $.mapToArray(
+        function(k, v) '%s: %s' % [std.escapeStringBash(k), $.serializeVim(v)],
+        value,
+      );
+      '{' + std.join(', ', fields) + '}',
+  },
+  serializeVim: function(value)
+    local type = std.type(value);
+    if std.objectHas($._vimSerializers, type)
+    then $._vimSerializers[type](value)
+    else error ("Can't serialize '%s' of type %s for vim" % [value, type]),
+
   pathDirname:: function(str)
     local parts = std.split(str, '/');
     local offset = if std.endsWith(str, '/') then 2 else 1;
