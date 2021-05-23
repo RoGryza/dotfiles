@@ -146,6 +146,7 @@ if [ ${#CHECK_ERRORS[@]} -ne 0 ]; then
 fi
 echo " OK"
 
+# TODO trigger onChange
 echo "Creating files..."
 for FILE in "${FILE_FILES[@]}"; do
   FULLFILE="${FILE/\~/$HOME}"

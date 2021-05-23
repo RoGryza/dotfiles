@@ -2,6 +2,8 @@ local checks = import 'lib/checks.libsonnet';
 local util = import 'lib/util.libsonnet';
 local extraModules = [
   import './coc.jsonnet',
+  import './terraform.jsonnet',
+
   // import './langs/zig.jsonnet',
   import './langs/typescript.jsonnet',
   import './langs/rust.jsonnet',
