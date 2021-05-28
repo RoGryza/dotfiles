@@ -46,6 +46,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> <Leader>rn <Plug>(coc-rename)
 nmap <silent> ga <Plug>(coc-codeaction-cursor)
 vmap <silent> ga <Plug>(coc-codeaction-cursor)
+nmap <silent><nowait> <C-t> <Cmd>CocList -I symbols<CR>
 
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
