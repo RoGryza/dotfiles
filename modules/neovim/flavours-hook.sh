@@ -2,5 +2,5 @@
 for SRV in "$(nvr --serverlist)"; do \
   nvr \
     --servername "$SRV" --nostart \
-    --remote-send ":colorscheme base16" || true \
+    --remote-send ":colorscheme base16<CR>" || true
 done

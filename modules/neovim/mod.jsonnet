@@ -41,7 +41,10 @@ local defaultModule = {
 
   files+: {
     '~/.config/nvim/init.vim': (importstr './init.vim') + '\npackadd my-plugins',
-    '~/.local/lib/flavour/nvim.sh': importstr './flavours-hook.sh',
+    '~/.local/lib/flavour/nvim.sh': {
+      mode: '755',
+      content: importstr './flavours-hook.sh',
+    },
     '~/.local/share/nvim/site/pack/my/opt/my-plugins/plugin/init.vim': std.join(
       '\n',
       ['call plug#begin(stdpath("data") . "/plugged")\n']

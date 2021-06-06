@@ -26,6 +26,9 @@ local defaultModule = {
       diff+: {
         colorMoved: 'default',
       },
+      pull+: {
+        rebase: false,
+      },
     },
     hooks+: {
       'pre-push'+: {

@@ -99,6 +99,9 @@ for_window [class="plasmashell" window_type="notification"] border none, move ri
 no_focus [class="plasmashell" window_type="notification"]
 
 for_window [title="Desktop — Plasma"] kill; floating enable; border none
+# Remove title since we already have plasma for that
+default_border pixel 1
+default_floating_border pixel 1
 
 # exit i3 (logs you out of your X session)
 # using plasma's logout screen instead of i3's
