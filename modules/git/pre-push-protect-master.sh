@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Prompt confirmation for pushes to master
 protected_branch='master'
 current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
