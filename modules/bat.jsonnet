@@ -1,6 +1,5 @@
 local checks = import 'lib/checks.libsonnet';
 {
-  local root = self,
   local themeName = 'my-base16',
 
   checks+: [
