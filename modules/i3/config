@@ -34,8 +34,15 @@ bindsym $mod+x kill
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 
 # change focus
+focus_wrapping workspace
 bindsym $mod+j focus next
 bindsym $mod+k focus prev
+# TODO move next/prev?
+bindsym $mod+Shift+j move right
+bindsym $mod+Shift+k move left
+# move workspace
+bindsym $mod+Shift+l move workspace to output right
+bindsym $mod+Shift+h move workspace to output left
 
 # split in horizontal orientation
 # bindsym $mod+h split h
