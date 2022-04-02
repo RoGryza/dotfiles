@@ -66,7 +66,7 @@ set scrolloff=10
 
 " Show trailing whitespace
 set list
-set listchars="tab:▸\\ ,trail:¬,nbsp:.,extends:❯,precedes:❮"
+set listchars=tab:▸\ ,trail:¬,nbsp:.,extends:❯,precedes:❮
 
 set guifont="Fira Code Nerd Font Complete Mono:h16"
 augroup ListChars2
