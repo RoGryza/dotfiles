@@ -5,6 +5,7 @@ local extraModules = [
   import './terraform.jsonnet',
 
   // import './langs/zig.jsonnet',
+  import './langs/nix.jsonnet',
   import './langs/typescript.jsonnet',
   import './langs/rust.jsonnet',
   import './langs/toml.jsonnet',
